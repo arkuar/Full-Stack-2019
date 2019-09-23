@@ -1,21 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
-import axios from 'axios'
+import personService from './services/persons'
 
-const Person = ({ person }) => {
-  return (
-    <p>{person.name} {person.number}</p>
-  )
-}
+const Person = ({ person, handleDelete }) => <div>{person.name} {person.number} <button onClick={() => handleDelete(person)}>delete</button></div>
 
-const Filter = ({ value, handleChange }) => {
-  return (
-    <div>
-      filter shown with <input value={value} onChange={handleChange} />
-    </div>
-  )
-}
+const Filter = ({ value, handleChange }) => <div>filter shown with <input value={value} onChange={handleChange} /></div>
 
 const PersonForm = ({ submit, nameValue, numberValue, handleNameChange, handleNumberChange }) => {
   return (
@@ -33,13 +23,7 @@ const PersonForm = ({ submit, nameValue, numberValue, handleNameChange, handleNu
   )
 }
 
-const Persons = ({ persons }) => {
-  return (
-    <div>
-      {persons.map(person => <Person key={person.name} person={person} />)}
-    </div>
-  )
-}
+const Persons = ({ persons, handleDelete }) => <div>{persons.map(person => <Person key={person.name} person={person} handleDelete={handleDelete} />)}</div>
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -48,26 +32,37 @@ const App = () => {
   const [filterStr, setNewFilter] = useState('')
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then(response => {
-        setPersons(response.data)
+    personService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
       })
   }, [])
 
   const addNumber = (event) => {
     event.preventDefault()
     if (persons.some(person => person.name.toUpperCase() === newName.toUpperCase())) {
-      window.alert(`${newName} is already added to phonebook`)
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+        const person = persons.find(p => p.name.toUpperCase() === newName.toUpperCase())
+        const changedPerson = { ...person, number: newNumber }
+
+        personService
+          .update(changedPerson.id, changedPerson)
+          .then(returnedPerson => {
+            setPersons(persons.map(person => person.id !== changedPerson.id ? person : returnedPerson))
+            setNewName('')
+            setNewNumber('')
+          })
+      }
     } else {
       const personObj = {
         name: newName,
         number: newNumber
       }
-      axios
-        .post('http://localhost:3001/persons', personObj)
-        .then(response => {
-          setPersons(persons.concat(response.data))
+      personService
+        .create(personObj)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
         })
@@ -86,6 +81,16 @@ const App = () => {
     setNewFilter(event.target.value)
   }
 
+  const handleDelete = (person) => {
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personService
+        .deletePerson(person.id)
+        .then(() => {
+          setPersons(persons.filter(p => p.id !== person.id))
+        })
+    }
+  }
+
   const personsToShow = filterStr ? persons.filter(person => person.name.toUpperCase().includes(filterStr.toUpperCase())) : persons
 
   return (
@@ -99,7 +104,7 @@ const App = () => {
         handleNameChange={handleNameChange}
         handleNumberChange={handleNumberChange} />
       <h3>Numbers</h3>
-      <Persons persons={personsToShow} />
+      <Persons persons={personsToShow} handleDelete={handleDelete} />
     </div>
   )
 }
