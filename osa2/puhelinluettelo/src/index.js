@@ -25,11 +25,24 @@ const PersonForm = ({ submit, nameValue, numberValue, handleNameChange, handleNu
 
 const Persons = ({ persons, handleDelete }) => <div>{persons.map(person => <Person key={person.name} person={person} handleDelete={handleDelete} />)}</div>
 
+const Notification = ({ type, message }) => {
+  if (message === null) {
+    return null
+  }
+  return (
+    <div className={type} >
+      {message}
+    </div>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [filterStr, setNewFilter] = useState('')
+  const [notificationMsg, setNotificationMsg] = useState(null)
+  const [notificationType, setNotificationType] = useState('')
 
   useEffect(() => {
     personService
@@ -38,6 +51,13 @@ const App = () => {
         setPersons(initialPersons)
       })
   }, [])
+
+  const notificationTimeout = () => {
+    setTimeout(() => {
+      setNotificationMsg(null)
+      setNotificationType(null)
+    }, 5000)
+  }
 
   const addNumber = (event) => {
     event.preventDefault()
@@ -52,6 +72,15 @@ const App = () => {
             setPersons(persons.map(person => person.id !== changedPerson.id ? person : returnedPerson))
             setNewName('')
             setNewNumber('')
+            setNotificationMsg(`Updated ${returnedPerson.name}`)
+            setNotificationType('success')
+            notificationTimeout()
+          })
+          .catch(e => {
+            setNotificationMsg(`Information of ${changedPerson.name} has already been removed from server`)
+            setNotificationType('error')
+            setPersons(persons.filter(p => p.id !== changedPerson.id))
+            notificationTimeout()
           })
       }
     } else {
@@ -65,6 +94,9 @@ const App = () => {
           setPersons(persons.concat(returnedPerson))
           setNewName('')
           setNewNumber('')
+          setNotificationMsg(`Added ${personObj.name}`)
+          setNotificationType('success')
+          notificationTimeout()
         })
     }
   }
@@ -87,6 +119,9 @@ const App = () => {
         .deletePerson(person.id)
         .then(() => {
           setPersons(persons.filter(p => p.id !== person.id))
+          setNotificationMsg(`Deleted ${person.name}`)
+          setNotificationType('success')
+          notificationTimeout()
         })
     }
   }
@@ -96,6 +131,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification type={notificationType} message={notificationMsg} />
       <Filter value={filterStr} handleChange={handleFilterChange} />
       <h3>Add a new</h3>
       <PersonForm submit={addNumber}
