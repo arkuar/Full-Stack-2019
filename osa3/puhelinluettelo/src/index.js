@@ -98,6 +98,11 @@ const App = () => {
           setNotificationType('success')
           notificationTimeout()
         })
+        .catch(error => {
+          setNotificationMsg(error.response.data.error)
+          setNotificationType('error')
+          notificationTimeout()
+        })
     }
   }
 
