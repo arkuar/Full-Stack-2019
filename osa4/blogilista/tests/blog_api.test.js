@@ -7,7 +7,7 @@ const Blog = require('../models/blog')
 const helper = require('./test_helper')
 
 
-describe('Blog API', () => {
+describe('when there are initial blogs saved', () => {
   /* Incresed timeout value since default timeout caused tests to fail */
   jest.setTimeout(20000)
 
@@ -20,7 +20,7 @@ describe('Blog API', () => {
     await Promise.all(promiseArr)
   })
 
-  test('should return all blogs in JSON', async () => {
+  test('blogs should be returned in JSON', async () => {
     const res = await api.get('/api/blogs')
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -54,7 +54,10 @@ describe('Blog API', () => {
     const titles = blogs.map(blog => blog.title)
     expect(titles).toContain('Valid blog');
   })
+})
 
+
+describe('when adding a blog', () => {
   test('likes is set to 0 if not defined', async () => {
     const newBlog = {
       title: 'Another valid blog',
@@ -70,7 +73,7 @@ describe('Blog API', () => {
     expect(res.body.likes).toBe(0)
   })
   
-  test('blog without required fields returns status 400', async () => {
+  test('if required fields are empty, returns status 400', async () => {
     const invalidBlog = {
       author: 'Not valid'
     }
@@ -79,6 +82,61 @@ describe('Blog API', () => {
       .send(invalidBlog)
       .expect(400)
   })
+})
+
+
+describe('when deleting', () => {
+  jest.setTimeout(20000)
+
+  beforeEach(async () => {
+    await Blog.deleteMany({})
+
+    const blogObjects = helper.initialBlogs
+      .map(blog => new Blog(blog))
+    const promiseArr = blogObjects.map(blog => blog.save())
+    await Promise.all(promiseArr)
+  })
+  
+  test('should return status 204 if id is valid', async () => {
+    const blogs = await helper.blogsInDb()
+    const blogToDelete = blogs[0]
+
+    await api.delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
+
+    const blogsAfterDeletion = await helper.blogsInDb()
+    expect(blogsAfterDeletion.length).toBe(helper.initialBlogs.length - 1)
+
+    const titles = blogsAfterDeletion.map(blog => blog.title)
+    expect(titles).not.toContain(blogToDelete.title)
+  })
+})
+
+describe('when editing a blog', () => {
+  jest.setTimeout(20000)
+
+  beforeEach(async () => {
+    await Blog.deleteMany({})
+
+    const blogObjects = helper.initialBlogs
+      .map(blog => new Blog(blog))
+    const promiseArr = blogObjects.map(blog => blog.save())
+    await Promise.all(promiseArr)
+  })
+
+  
+  test('should return status 200 and updated blog if succesful', async () => {
+    const blogs = await helper.blogsInDb()
+    const blog = blogs[0]
+
+    const blogToEdit = { ...blog, title: 'Edited' }
+    const updated = await api.put(`/api/blogs/${blogToEdit.id}`)
+      .send(blogToEdit)
+      .expect(200)
+
+    expect(updated.body).toEqual(blogToEdit);
+  })
+  
 })
 
 afterAll(() => {
