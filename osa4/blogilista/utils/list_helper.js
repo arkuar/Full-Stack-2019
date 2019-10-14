@@ -20,7 +20,7 @@ const favoriteBlog = (blogs) => {
 }
 
 const mostBlogs = (blogs) => {
-  if(blogs.length === 0) {
+  if (blogs.length === 0) {
     return null
   }
   const result = _(blogs).groupBy('author')
@@ -31,7 +31,7 @@ const mostBlogs = (blogs) => {
 }
 
 const mostLikes = (blogs) => {
-  if(blogs.length === 0) {
+  if (blogs.length === 0) {
     return null
   }
   const result = _(blogs).groupBy('author')
@@ -43,7 +43,7 @@ const mostLikes = (blogs) => {
     })
     .value()
     .reduce((prev, curr) => (prev.likes > curr.likes) ? prev : curr)
-    return result
+  return result
 }
 
 module.exports = {
