@@ -1,4 +1,5 @@
-import React, {useState} from 'react'
+import React, { useState } from 'react'
+import PropTypes from 'prop-types'
 
 const BlogForm = ({ submitCallback }) => {
   const [title, setTitle] = useState('')
@@ -20,7 +21,7 @@ const BlogForm = ({ submitCallback }) => {
       <form onSubmit={handleSubmit}>
         <div>
           title:
-          <input 
+          <input
             type='text'
             value={title}
             name='Title'
@@ -38,7 +39,7 @@ const BlogForm = ({ submitCallback }) => {
         </div>
         <div>
           url:
-          <input 
+          <input
             type='text'
             value={url}
             name='URL'
@@ -49,6 +50,10 @@ const BlogForm = ({ submitCallback }) => {
       </form>
     </div>
   )
+}
+
+BlogForm.propTypes = {
+  submitCallback: PropTypes.func.isRequired
 }
 
 export default BlogForm

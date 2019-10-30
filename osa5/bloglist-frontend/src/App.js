@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import loginService from './services/login'
 import blogService from './services/blogs'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
-import Togglable from './components/Togglable';
+import Togglable from './components/Togglable'
 
 
 const App = () => {
@@ -16,16 +16,16 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null)
 
   useEffect(() => {
+    async function getBlogs() {
+      const blogs = await blogService.getAll()
+      setBlogs(blogs)
+    }
+
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
       setUser(user)
       blogService.setToken(user.token)
-      
-      async function getBlogs() {
-        const blogs = await blogService.getAll()
-        setBlogs(blogs)
-      }
 
       getBlogs()
     }
@@ -46,7 +46,7 @@ const App = () => {
       setUsername('')
       setPassword('')
 
-      const blogs = await blogService.getAll() 
+      const blogs = await blogService.getAll()
       setBlogs(blogs)
     } catch (exception) {
       setErrorMessage('wrong username or password')
@@ -81,14 +81,14 @@ const App = () => {
   const likeBlog = async (event, id) => {
     event.stopPropagation()
     const blog = blogs.find(b => b.id === id)
-    const likedBlog = {...blog, likes: blog.likes + 1, user: blog.user.id}
+    const likedBlog = { ...blog, likes: blog.likes + 1, user: blog.user.id }
     const returnedBlog = await blogService.update(id, likedBlog)
-    setBlogs(blogs.map(b => b.id !== id ? b : returnedBlog)) 
+    setBlogs(blogs.map(b => b.id !== id ? b : returnedBlog))
   }
 
   const removeBlog = async (id) => {
     const blog = blogs.find(b => b.id === id)
-    if(window.confirm(`remove blog ${blog.title} by ${blog.author}`)) {
+    if (window.confirm(`remove blog ${blog.title} by ${blog.author}`)) {
       await blogService.remove(blog.id)
       setBlogs(blogs.filter(blog => blog.id !== id))
     }
@@ -102,7 +102,7 @@ const App = () => {
         <form onSubmit={handleLogin}>
           <div>
             username
-          <input
+            <input
               type="text"
               value={username}
               name="Username"
@@ -111,7 +111,7 @@ const App = () => {
           </div>
           <div>
             password
-          <input
+            <input
               type="password"
               value={password}
               name="Password"
@@ -133,10 +133,10 @@ const App = () => {
         <BlogForm submitCallback={createBlog} />
       </Togglable>
       {blogs.sort((a, b) => b.likes - a.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} onLike={likeBlog} onRemove={removeBlog} showRemove={user.username === blog.user.username}/>
+        <Blog key={blog.id} blog={blog} onLike={likeBlog} onRemove={removeBlog} showRemove={user.username === blog.user.username} />
       )}
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
