@@ -49,6 +49,18 @@ module.exports = {
       "error", { "before": true, "after": true }
     ],
     "no-console": 0,
-    "react/prop-types": 0
+    "react/prop-types": 0,
+    "comma-dangle": [
+      "error",
+      "never"
+    ],
+    "jsx-quotes": [
+      "error",
+      "prefer-single"
+    ],
+    "space-before-function-paren": [
+      "error",
+      "always"
+    ]
   }
 };

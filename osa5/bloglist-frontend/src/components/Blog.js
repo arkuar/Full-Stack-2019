@@ -17,7 +17,7 @@ const Blog = ({ blog, onLike, onRemove, showRemove }) => {
   if (show) {
     return (
       <div style={blogStyle}>
-        <div onClick={() => toggleShow(false)}>
+        <div className='content' onClick={() => toggleShow(false)}>
           <p>{blog.title} {blog.author}</p>
           <a href={blog.url}>{blog.url}</a>
           <p>{blog.likes} likes <button onClick={(event) => onLike(event, blog.id)}>like</button></p>
@@ -33,7 +33,7 @@ const Blog = ({ blog, onLike, onRemove, showRemove }) => {
 
   return (
     <div style={blogStyle}>
-      <div onClick={() => toggleShow(true)}>
+      <div className='content' onClick={() => toggleShow(true)}>
         {blog.title} {blog.author}
       </div>
     </div>
