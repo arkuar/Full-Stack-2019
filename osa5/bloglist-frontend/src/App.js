@@ -5,10 +5,11 @@ import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import { useField } from './hooks/index'
 
 const App = () => {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const username = useField('text')
+  const password = useField('password')
   const [user, setUser] = useState(null)
   const [blogs, setBlogs] = useState([])
   const [message, setMessage] = useState(null)
@@ -34,15 +35,15 @@ const App = () => {
     event.preventDefault()
     try {
       const user = await loginService.login({
-        username,
-        password
+        username: username.state.value,
+        password: password.state.value
       })
 
       window.localStorage.setItem('loggedUser', JSON.stringify(user))
       blogService.setToken(user.token)
       setUser(user)
-      setUsername('')
-      setPassword('')
+      username.reset()
+      password.reset()
 
       const blogs = await blogService.getAll()
       setBlogs(blogs)
@@ -100,21 +101,11 @@ const App = () => {
         <form onSubmit={handleLogin}>
           <div>
             username
-            <input
-              type='text'
-              value={username}
-              name='Username'
-              onChange={({ target }) => setUsername(target.value)}
-            />
+            <input {...username.state} />
           </div>
           <div>
             password
-            <input
-              type='password'
-              value={password}
-              name='Password'
-              onChange={({ target }) => setPassword(target.value)}
-            />
+            <input {...password.state} />
           </div>
           <button type='submit'>login</button>
         </form>

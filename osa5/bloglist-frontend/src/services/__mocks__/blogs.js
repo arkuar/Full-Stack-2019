@@ -13,8 +13,6 @@ const getAll = () => {
   return Promise.resolve(blogs)
 }
 
-const setToken = (newToken) => {
-  null
-}
+const setToken = () => null
 
 export default { getAll, setToken }

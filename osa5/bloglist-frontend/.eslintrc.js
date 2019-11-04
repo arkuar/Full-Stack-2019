@@ -21,7 +21,7 @@ module.exports = {
     "sourceType": "module"
   },
   "plugins": [
-    "react", "jest"
+    "react", "jest", "react-hooks"
   ],
   "rules": {
     "indent": [
@@ -61,6 +61,7 @@ module.exports = {
     "space-before-function-paren": [
       "error",
       "always"
-    ]
+    ],
+    "react-hooks/rules-of-hooks": "error"
   }
 };
