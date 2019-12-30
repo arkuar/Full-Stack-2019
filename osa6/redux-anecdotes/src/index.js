@@ -5,6 +5,7 @@ import App from './App'
 import reducer from './reducers/anecdoteReducer'
 import notificationReducer from './reducers/notificationReducer'
 import filterReducer from './reducers/filterReducer'
+import { Provider } from 'react-redux'
 
 const combined = combineReducers({
   anecdotes: reducer,
@@ -16,7 +17,9 @@ const store = createStore(combined)
 
 const render = () => {
   ReactDOM.render(
-    <App store={store} />,
+    <Provider store={store}>
+      <App />
+    </Provider>,
     document.getElementById('root')
   )
 }
