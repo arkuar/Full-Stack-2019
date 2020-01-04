@@ -9,8 +9,10 @@ const Users = (props) => {
       <Header as='h2'>Users</Header>
       <Table>
         <Table.Header>
-          <Table.HeaderCell></Table.HeaderCell>
-          <Table.HeaderCell>blogs created</Table.HeaderCell>
+          <Table.Row>
+            <Table.HeaderCell></Table.HeaderCell>
+            <Table.HeaderCell>blogs created</Table.HeaderCell>
+          </Table.Row>
         </Table.Header>
         <Table.Body>
           {props.users.map(user =>
