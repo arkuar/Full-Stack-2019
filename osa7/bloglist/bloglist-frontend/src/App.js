@@ -7,7 +7,7 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import Users from './components/Users'
 import User from './components/User'
-import Menu from './components/Menu'
+import Navigation from './components/Navigation'
 import { useField } from './hooks'
 import { setNotification } from './reducers/notificationReducer'
 import { connect } from 'react-redux'
@@ -15,6 +15,7 @@ import { initializeBlogs } from './reducers/blogReducer'
 import { initUsers } from './reducers/userReducer'
 import { setUser } from './reducers/loginReducer'
 import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
+import { Form, Button, Table } from 'semantic-ui-react'
 
 const App = (props) => {
   const [username, usernameReset] = useField('text')
@@ -48,16 +49,11 @@ const App = (props) => {
       usernameReset()
       passwordReset()
     } catch (exception) {
-      props.setNotification('wrong username or password', 'error', 10)
+      props.setNotification({
+        message: 'wrong username or password',
+        type: 'error'
+      }, 10)
     }
-  }
-
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5
   }
 
   if (props.user === null) {
@@ -67,17 +63,17 @@ const App = (props) => {
 
         <Notification notification={props.notification} />
 
-        <form onSubmit={handleLogin}>
-          <div>
-            käyttäjätunnus
+        <Form onSubmit={handleLogin}>
+          <Form.Field>
+            <label>username</label>
             <input {...username} />
-          </div>
-          <div>
-            salasana
+          </Form.Field>
+          <Form.Field>
+            <label>password</label>
             <input {...password} />
-          </div>
-          <button type='submit'>kirjaudu</button>
-        </form>
+          </Form.Field>
+          <Button primary type='submit'>login</Button>
+        </Form>
       </div>
     )
   }
@@ -87,7 +83,7 @@ const App = (props) => {
   return (
     <div>
       <Router>
-        <Menu />
+        <Navigation />
         <h2>blogs</h2>
 
         <Notification notification={props.notification} />
@@ -97,13 +93,22 @@ const App = (props) => {
             <Togglable buttonLabel='create new' ref={newBlogRef}>
               <NewBlog />
             </Togglable>
-            {props.blogs.map(blog =>
-              <div style={blogStyle} key={blog.id}>
-                <Link to={`/blogs/${blog.id}`}>
-                  {blog.title} {blog.author}
-                </Link>
-              </div>
-            )}
+            <Table striped>
+              <Table.Body>
+                {props.blogs.map(blog =>
+                  <Table.Row key={blog.id}>
+                    <Table.Cell>
+                      <Link to={`/blogs/${blog.id}`}>
+                        {blog.title}
+                      </Link>
+                    </Table.Cell>
+                    <Table.Cell>
+                      {blog.author}
+                    </Table.Cell>
+                  </Table.Row>
+                )}
+              </Table.Body>
+            </Table>
           </div>} />
         <Route exact path='/users' render={() => <Users />} />
         <Route exact path='/users/:id' render={({ match }) =>

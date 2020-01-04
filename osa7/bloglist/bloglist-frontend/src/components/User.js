@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Header, List } from 'semantic-ui-react'
 
 const User = (props) => {
   if(props.user === undefined) {
@@ -8,13 +9,13 @@ const User = (props) => {
 
   return (
     <div>
-      <h2>{props.user.name}</h2>
-      <h3>blogs created</h3>
-      <ul>
+      <Header as='h2'>{props.user.name}</Header>
+      <Header as='h3'>blogs created</Header>
+      <List bulleted>
         {props.user.blogs.map(blog =>
-          <li key={blog.id}>{blog.title}</li>
+          <List.Item key={blog.id}>{blog.title}</List.Item>
         )}
-      </ul>
+      </List>
     </div>
   )
 }

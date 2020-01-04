@@ -15,7 +15,7 @@ const reducer = (state = initialState, action) => {
   return state
 }
 
-export const setNotification = (message, type = 'success', seconds) => {
+export const setNotification = ({ message, type = 'success' }, seconds) => {
   return (dispatch) => {
     dispatch({
       type: 'SET_NOTIFICATION',

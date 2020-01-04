@@ -3,6 +3,7 @@ import { useField } from '../hooks'
 import { createBlog } from '../reducers/blogReducer'
 import { connect } from 'react-redux'
 import { setNotification } from '../reducers/notificationReducer'
+import { Form, Button } from 'semantic-ui-react'
 
 const NewBlog = (props) => {
   const [title, titleReset] = useField('text')
@@ -16,7 +17,9 @@ const NewBlog = (props) => {
       author: author.value,
       url: url.value
     })
-    props.setNotification(`a new blog ${title.value} by ${author.value} added`, null, 10)
+    props.setNotification({
+      message: `a new blog ${title.value} by ${author.value} added`
+    }, 10)
     titleReset()
     authorReset()
     urlReset()
@@ -26,21 +29,23 @@ const NewBlog = (props) => {
     <div>
       <h2>create new</h2>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          title:
-          <input {...title} />
-        </div>
-        <div>
-          author:
-          <input {...author} />
-        </div>
-        <div>
-          url:
-          <input {...url} />
-        </div>
-        <button type='submit'>create</button>
-      </form>
+      <Form onSubmit={handleSubmit}>
+        <Form.Group widths='equal'>
+          <Form.Field>
+            <label>title</label>
+            <input placeholder='Title' {...title} />
+          </Form.Field>
+          <Form.Field>
+            <label>author</label>
+            <input placeholder='Author' {...author} />
+          </Form.Field>
+          <Form.Field>
+            <label>url</label>
+            <input placeholder='URL' {...url} />
+          </Form.Field>
+        </Form.Group>
+        <Button primary type='submit'>create</Button>
+      </Form>
     </div>
   )
 }

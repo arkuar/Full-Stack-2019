@@ -1,37 +1,80 @@
 import React from 'react'
-import { likeBlog, removeBlog } from '../reducers/blogReducer'
+import { likeBlog, removeBlog, commentBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import { connect } from 'react-redux'
+import { useField } from '../hooks/index'
+import { Button, Icon, Card, Form, Comment, Header, Statistic } from 'semantic-ui-react'
+import { withRouter } from 'react-router-dom'
 
 const Blog = (props) => {
+  const [comment, resetComment] = useField('text')
 
-  if(props.blog === undefined) {
+  if (props.blog === undefined) {
     return null
+  }
+
+  const handleComment = async (event) => {
+    event.preventDefault()
+    props.commentBlog(props.blog.id, comment.value)
+    props.setNotification({
+      message: `commented blog ${props.blog.title}`
+    }, 10)
+    resetComment()
   }
 
   const like = async (blog) => {
     props.likeBlog(blog)
-    props.setNotification(`blog ${blog.title} by ${blog.author} liked!`, null, 10)
+    props.setNotification({
+      message: `blog ${blog.title} by ${blog.author} liked!`
+    }, 10)
   }
 
   const remove = async (blog) => {
     const ok = window.confirm(`remove blog ${blog.title} by ${blog.author}`)
     if (ok) {
       props.removeBlog(blog)
-      props.setNotification(`blog ${blog.title} by ${blog.author} removed!`, null, 10)
+      props.setNotification({
+        message: `blog ${blog.title} by ${blog.author} removed!`
+      }, 10)
+      props.history.push('/')
     }
   }
 
   return (
-    <div>
-      <h2>{props.blog.title} {props.blog.author}</h2>
-      <a href={props.blog.url}>{props.blog.url}</a>
-      <div>{props.blog.likes} likes
-        <button onClick={() => like(props.blog)}>like</button>
-      </div>
-      <div>added by {props.blog.user.name}</div>
-      {props.user.username === props.blog.user.username ? <button onClick={() => remove(props.blog)}>remove </button> : null}
-    </div>
+    <Card fluid>
+      <Card.Content>
+        <Card.Header>{props.blog.title} {props.blog.author}</Card.Header>
+        <div><a href={props.blog.url}>{props.blog.url}</a></div>
+        <Statistic size='mini'>
+          <Statistic.Value>{props.blog.likes}</Statistic.Value>
+          <Statistic.Label>likes</Statistic.Label>
+        </Statistic>
+        <Button onClick={() => like(props.blog)}>
+          <Icon name='like' />
+          like
+        </Button>
+        <div>added by {props.blog.user.name}
+          {props.user.username === props.blog.user.username ? <Button negative onClick={() => remove(props.blog)}>remove </Button> : null}
+        </div>
+        <Comment.Group>
+          <Header as='h3' dividing>comments</Header>
+          <Form onSubmit={handleComment}>
+            <Form.Group>
+              <Form.Field>
+                <input {...comment} />
+              </Form.Field>
+              <Button type='submit'>add comment</Button>
+            </Form.Group>
+          </Form>
+          {props.blog.comments.map(c =>
+            <Comment key={c}>
+              <Comment.Content>
+                <Comment.Text>{c}</Comment.Text>
+              </Comment.Content>
+            </Comment>)}
+        </Comment.Group>
+      </Card.Content>
+    </Card>
   )
 }
 
@@ -41,4 +84,4 @@ const mapStateToProps = (state, ownProps) => ({
 })
 
 
-export default connect(mapStateToProps, { likeBlog, setNotification, removeBlog })(Blog)
+export default connect(mapStateToProps, { likeBlog, setNotification, removeBlog, commentBlog })(withRouter(Blog))
