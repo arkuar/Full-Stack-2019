@@ -41,29 +41,29 @@ const Blog = (props) => {
   }
 
   return (
-    <Card fluid>
+    <Card fluid data-cy='blogCard'>
       <Card.Content>
         <Card.Header>{props.blog.title} {props.blog.author}</Card.Header>
         <div><a href={props.blog.url}>{props.blog.url}</a></div>
-        <Statistic size='mini'>
+        <Statistic size='mini' data-cy='blogLikes'>
           <Statistic.Value>{props.blog.likes}</Statistic.Value>
           <Statistic.Label>likes</Statistic.Label>
         </Statistic>
-        <Button onClick={() => like(props.blog)}>
+        <Button onClick={() => like(props.blog)} data-cy='likeButton'>
           <Icon name='like' />
           like
         </Button>
         <div>added by {props.blog.user.name}
-          {props.user.username === props.blog.user.username ? <Button negative onClick={() => remove(props.blog)}>remove </Button> : null}
+          {props.user.username === props.blog.user.username ? <Button data-cy='removeButton' negative onClick={() => remove(props.blog)}>remove </Button> : null}
         </div>
-        <Comment.Group>
-          <Header as='h3' dividing>comments</Header>
+        <Comment.Group data-cy='comments'>
+          <Header data-cy='commentsHeader' as='h3' dividing>comments</Header>
           <Form onSubmit={handleComment}>
             <Form.Group>
               <Form.Field>
-                <input {...comment} />
+                <input data-cy='commentInput' {...comment} />
               </Form.Field>
-              <Button type='submit'>add comment</Button>
+              <Button type='submit' data-cy='addComment'>add comment</Button>
             </Form.Group>
           </Form>
           {props.blog.comments.map(c =>

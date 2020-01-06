@@ -33,18 +33,18 @@ const NewBlog = (props) => {
         <Form.Group widths='equal'>
           <Form.Field>
             <label>title</label>
-            <input placeholder='Title' {...title} />
+            <input data-cy='formTitle' placeholder='Title' {...title} />
           </Form.Field>
           <Form.Field>
             <label>author</label>
-            <input placeholder='Author' {...author} />
+            <input data-cy='formAuthor' placeholder='Author' {...author} />
           </Form.Field>
           <Form.Field>
             <label>url</label>
-            <input placeholder='URL' {...url} />
+            <input data-cy='formUrl' placeholder='URL' {...url} />
           </Form.Field>
         </Form.Group>
-        <Button primary type='submit'>create</Button>
+        <Button primary type='submit' data-cy='formSubmit'>create</Button>
       </Form>
     </div>
   )

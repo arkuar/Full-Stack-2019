@@ -23,6 +23,7 @@ const App = (props) => {
 
   useEffect(() => {
     props.initializeBlogs()
+    props.initUsers()
   }, [])
 
   useEffect(() => {
@@ -31,7 +32,6 @@ const App = (props) => {
       const user = JSON.parse(loggedUserJSON)
       props.setUser(user)
       blogService.setToken(user.token)
-      props.initUsers()
     }
   }, [])
 
@@ -66,13 +66,13 @@ const App = (props) => {
         <Form onSubmit={handleLogin}>
           <Form.Field>
             <label>username</label>
-            <input {...username} />
+            <input data-cy='username' {...username} />
           </Form.Field>
           <Form.Field>
             <label>password</label>
-            <input {...password} />
+            <input data-cy='password' {...password} />
           </Form.Field>
-          <Button primary type='submit'>login</Button>
+          <Button primary type='submit' data-cy='login'>login</Button>
         </Form>
       </div>
     )
@@ -84,7 +84,7 @@ const App = (props) => {
     <div>
       <Router>
         <Navigation />
-        <h2>blogs</h2>
+        <h2 data-cy='title'>blogs</h2>
 
         <Notification notification={props.notification} />
 
@@ -93,7 +93,7 @@ const App = (props) => {
             <Togglable buttonLabel='create new' ref={newBlogRef}>
               <NewBlog />
             </Togglable>
-            <Table striped>
+            <Table striped data-cy='blogTable'>
               <Table.Body>
                 {props.blogs.map(blog =>
                   <Table.Row key={blog.id}>

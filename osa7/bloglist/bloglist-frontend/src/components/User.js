@@ -8,7 +8,7 @@ const User = (props) => {
   }
 
   return (
-    <div>
+    <div data-cy='userView'>
       <Header as='h2'>{props.user.name}</Header>
       <Header as='h3'>blogs created</Header>
       <List bulleted>

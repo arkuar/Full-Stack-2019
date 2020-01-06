@@ -13,12 +13,12 @@ const Navigation = (props) => {
   }
 
   return (
-    <Menu inverted>
+    <Menu inverted data-cy='navigation'>
       <Menu.Item link>
         <Link to='/'>blogs</Link>
       </Menu.Item>
       <Menu.Item link>
-        <Link to='/users'>users</Link>
+        <Link data-cy='usersTabLink' to='/users'>users</Link>
       </Menu.Item>
       <Menu.Menu position='right'>
         <Menu.Item>

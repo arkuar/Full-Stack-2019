@@ -6,8 +6,8 @@ import { Header, Table } from 'semantic-ui-react'
 const Users = (props) => {
   return (
     <div>
-      <Header as='h2'>Users</Header>
-      <Table>
+      <Header as='h2' data-cy='usersTab'>Users</Header>
+      <Table data-cy='usersTable'>
         <Table.Header>
           <Table.Row>
             <Table.HeaderCell></Table.HeaderCell>

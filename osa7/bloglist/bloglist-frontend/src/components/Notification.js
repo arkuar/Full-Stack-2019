@@ -12,6 +12,7 @@ const Notification = (props) => {
       success={props.notification.type === 'success'}
       error={props.notification.type === 'error'}
       header={props.notification.message}
+      data-cy='notification'
     />
   )
 }
